@@ -125,8 +125,11 @@
         let currentCategory = 'all';
         const originalCopyIcon = "https://images.icon-icons.com/935/PNG/96/copy-two-paper-sheets-interface-symbol_icon-icons.com_73283.png";
         const checkCopyIcon = "https://images.icon-icons.com/1206/PNG/96/1491254409-truecheckacceptapprove_82933.png";
+        
+        // تم تحديث رابط صورة الإعجاب هنا بالرابط المطلوب
         const likeIconUrl = "https://emojigraph.org/media/144/apple/smiling-face-with-heart-eyes_1f60d.png";
-        const dislikeIconUrl = "https://emojigraph.org/media/144/apple/pouting-face_1f621.png";
+        
+        const dislikeIconUrl = "https://raw.githubusercontent.com/0xme/ff-resources/refs/heads/main/pngs/300x300/FF_UI_Emoji_yf_14.png";
 
         fetch('items.json')
             .then(response => response.json())
@@ -141,7 +144,6 @@
             container.innerHTML = '';
             items.forEach((app, index) => {
                 const uniqueKey = app.id || `item_${index}`;
-                // قراءة player_id من ملف items.json بالشكل الصحيح
                 const playerId = app.player_id || app.playerId || "";
 
                 container.innerHTML += `
@@ -184,7 +186,6 @@
         function filterByCategory(category, btnElement) {
             currentCategory = category;
             
-            // تحديث تصميم الأزرار النشطة
             document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
             if(btnElement) btnElement.classList.add('active');
 
@@ -229,5 +230,65 @@
                 if (iconElement) {
                     iconElement.src = checkCopyIcon;
                     setTimeout(() => {
-                        iconElement.src
-    
+                        iconElement.src = originalCopyIcon;
+                    }, 2000);
+                }
+            });
+        }
+
+        function fetchAllReactions() {
+            fetch('https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions.json')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data) return;
+                    allItems.forEach((app, index) => {
+                        const uniqueKey = app.id || `item_${index}`;
+                        const likesSpan = document.getElementById(`likes-count-${index}`);
+                        const dislikesSpan = document.getElementById(`dislikes-count-${index}`);
+                        
+                        if (data[uniqueKey]) {
+                            if (likesSpan && data[uniqueKey].likes) {
+                                likesSpan.textContent = data[uniqueKey].likes;
+                            }
+                            if (dislikesSpan && data[uniqueKey].dislikes) {
+                                dislikesSpan.textContent = data[uniqueKey].dislikes;
+                            }
+                        }
+                    });
+                }).catch(err => console.error(err));
+        }
+
+        function handleReaction(uniqueKey, index, type) {
+            const lastActionDate = localStorage.getItem(`reacted_${uniqueKey}`);
+            const today = new Date().toDateString();
+
+            if (lastActionDate === today) {
+                alert("لقد قمت بالتفاعل مع هذا العنصر اليوم بالفعل. يمكنك التفاعل مرة أخرى غداً!");
+                return;
+            }
+
+            const countSpan = document.getElementById(`${type}-count-${index}`);
+            if (!countSpan) return;
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            currentCount++;
+            countSpan.textContent = currentCount;
+
+            localStorage.setItem(`reacted_${uniqueKey}`, today);
+
+            fetch(`https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions/${uniqueKey}/${type}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(currentCount)
+            }).catch(err => console.error(err));
+        }
+
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./sw.js", { scope: "./" })
+                    .then((reg) => console.log("Service Worker Registered!", reg.scope))
+                    .catch((err) => console.log("Service Worker Failed:", err));
+            });
+        }
+    </script>
+</body>
+    </html>
+                
