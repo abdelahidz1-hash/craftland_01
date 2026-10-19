@@ -128,8 +128,8 @@
         
         const likeIconUrl = "https://emojigraph.org/media/144/apple/smiling-face-with-heart-eyes_1f60d.png";
         
-        // تم تحديث رابط صورة عدم الإعجاب هنا بالرابط المطلوب
-        const dislikeIconUrl = "https://emojigraph.org/media/144/apple/pouting-face_1f621.png";
+        // تم تحديث رابط صورة عدم الإعجاب هنا
+        const dislikeIconUrl = "https://emojigraph.org/media/144/apple/face-vomiting_1f92e.png";
 
         fetch('items.json')
             .then(response => response.json())
@@ -200,95 +200,5 @@
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             
             const filtered = allItems.filter(item => {
-                const itemName = (item.name || "").toLowerCase();
-                const itemDesc = (item.description || "").toLowerCase();
-                const itemCat = (item.category || item.tag || item.link || "").toLowerCase();
-                const itemPlayerId = (item.player_id || item.playerId || "").toLowerCase();
-                const fullText = `${itemName} ${itemDesc} ${itemCat} ${itemPlayerId}`;
-
-                const matchesSearch = fullText.includes(searchTerm);
-
-                let matchesCategory = true;
-                if (currentCategory !== 'all') {
-                    const targetCategory = currentCategory.toLowerCase();
-                    matchesCategory = (item.category && item.category.toLowerCase() === targetCategory) ||
-                                      (item.tag && item.tag.toLowerCase() === targetCategory) ||
-                                      (item.link && item.link.toLowerCase() === targetCategory) ||
-                                      fullText.includes(targetCategory);
-                }
-
-                return matchesSearch && matchesCategory;
-            });
-
-            renderItems(filtered);
-        }
-
-        function copyToClipboard(text, elementId) {
-            navigator.clipboard.writeText(text).then(() => {
-                const iconElement = document.getElementById(elementId);
-                
-                if (iconElement) {
-                    iconElement.src = checkCopyIcon;
-                    setTimeout(() => {
-                        iconElement.src = originalCopyIcon;
-                    }, 2000);
-                }
-            });
-        }
-
-        function fetchAllReactions() {
-            fetch('https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions.json')
-                .then(res => res.json())
-                .then(data => {
-                    if (!data) return;
-                    allItems.forEach((app, index) => {
-                        const uniqueKey = app.id || `item_${index}`;
-                        const likesSpan = document.getElementById(`likes-count-${index}`);
-                        const dislikesSpan = document.getElementById(`dislikes-count-${index}`);
-                        
-                        if (data[uniqueKey]) {
-                            if (likesSpan && data[uniqueKey].likes) {
-                                likesSpan.textContent = data[uniqueKey].likes;
-                            }
-                            if (dislikesSpan && data[uniqueKey].dislikes) {
-                                dislikesSpan.textContent = data[uniqueKey].dislikes;
-                            }
-                        }
-                    });
-                }).catch(err => console.error(err));
-        }
-
-        function handleReaction(uniqueKey, index, type) {
-            const lastActionDate = localStorage.getItem(`reacted_${uniqueKey}`);
-            const today = new Date().toDateString();
-
-            if (lastActionDate === today) {
-                alert("لقد قمت بالتفاعل مع هذا العنصر اليوم بالفعل. يمكنك التفاعل مرة أخرى غداً!");
-                return;
-            }
-
-            const countSpan = document.getElementById(`${type}-count-${index}`);
-            if (!countSpan) return;
-            let currentCount = parseInt(countSpan.textContent) || 0;
-            currentCount++;
-            countSpan.textContent = currentCount;
-
-            localStorage.setItem(`reacted_${uniqueKey}`, today);
-
-            fetch(`https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions/${uniqueKey}/${type}.json`, {
-                method: 'PUT',
-                body: JSON.stringify(currentCount)
-            }).catch(err => console.error(err));
-        }
-
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("./sw.js", { scope: "./" })
-                    .then((reg) => console.log("Service Worker Registered!", reg.scope))
-                    .catch((err) => console.log("Service Worker Failed:", err));
-            });
-        }
-    </script>
-</body>
-                                                                                                                                                                                             </html>
-                    
+                const itemName = (item.name ||
+        
