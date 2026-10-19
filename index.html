@@ -10,6 +10,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@250;300;700&display=swap" rel="stylesheet">
 
     <style>
+        /* استيراد أو تعريف خط YR Grand Theft AR GTA */
+        @font-face {
+            font-family: 'YR Grand Theft';
+            src: url('YR-Grand-Theft-AR-GTA.woff2') format('woff2'),
+                 url('YR-Grand-Theft-AR-GTA.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         #welcome-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 15px; text-align: center; }
         .welcome-banner { background: #000; border: 2px solid transparent; border-radius: 20px; background-image: linear-gradient(#000, #000), linear-gradient(45deg, #ff0000, #ff4500, #ffd700); background-origin: border-box; background-clip: padding-box, border-box; padding: 20px; max-width: 400px; box-shadow: 0 0 20px rgba(255, 69, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.2); }
         .welcome-text { color: #fff; font-size: 0.9rem; line-height: 1.5; text-align: justify; font-weight: 280; }
@@ -44,7 +53,10 @@
         /* شريط المعلومات فوق وتحت الصورة مثل اللعبة */
         .game-badge { position: absolute; top: 10px; right: 10px; background: #00875a; color: #fff; font-size: 0.75rem; padding: 3px 10px; border-radius: 4px; font-weight: bold; display: none; }
         .game-info-overlay { background: transparent; border: none; border-radius: 0; padding: 0 0 8px 0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
-        .game-title-row { font-size: 1rem; font-weight: 300; color: #fff; text-align: right; }
+        
+        /* تطبيق خط YR Grand Theft AR GTA على اسم الخريطة */
+        .game-title-row { font-size: 1.1rem; font-weight: normal; color: #fff; text-align: right; font-family: 'YR Grand Theft', 'Cairo', sans-serif; letter-spacing: 0.5px; }
+        
         .player-id-row { font-size: 0.75rem; color: #ffffff; text-align: right; font-weight: 300; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
         .player-id-copy { width: 14px; height: 14px; cursor: pointer; filter: invert(1); transition: transform 0.2s ease; display: inline-block; vertical-align: middle; }
         .player-id-copy:active { transform: scale(0.9); }
@@ -128,7 +140,6 @@
         
         const likeIconUrl = "https://emojigraph.org/media/144/apple/smiling-face-with-heart-eyes_1f60d.png";
         
-        // تم تحديث رابط صورة عدم الإعجاب هنا بالرابط المطلوب
         const dislikeIconUrl = "https://emojigraph.org/media/144/apple/face-vomiting_1f92e.png";
 
         fetch('items.json')
@@ -290,4 +301,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+    
