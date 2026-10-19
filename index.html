@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRAFTLANd FF  </title>
+    <title>CRAFTLAND FF  </title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,12 +45,12 @@
         .game-badge { position: absolute; top: 10px; right: 10px; background: #00875a; color: #fff; font-size: 0.75rem; padding: 3px 10px; border-radius: 4px; font-weight: bold; display: none; }
         .game-info-overlay { background: transparent; border: none; border-radius: 0; padding: 0 0 8px 0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px; }
         .game-title-row { font-size: 1rem; font-weight: 300; color: #fff; text-align: right; }
+        .player-id-row { font-size: 0.75rem; color: #888; text-align: right; }
         .game-sub-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #aaa; }
         .game-stats { display: flex; align-items: center; gap: 5px; color: #ff7700; font-weight: bold; display: none; }
 
         .app-details h3 { display: none; }
         .app-description { font-size: 0.8rem; color: #aaa; margin-bottom: 10px; text-align: right; }
-        .player-info { font-size: 0.75rem; color: #ffd700; margin-bottom: 10px; text-align: right; font-weight: bold; }
         
         .progress-box { width: 100%; margin-bottom: 10px; display: none; }
         .progress-bar-bg { width: 100%; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
@@ -148,10 +148,10 @@
                     
                     <div class="game-info-overlay">
                         <div class="game-title-row">${app.name}</div>
+                        ${app.playerId ? `<div class="player-id-row">ID Player: ${app.playerId}</div>` : ''}
                     </div>
 
                     ${app.description ? `<p class="app-description">${app.description}</p>` : ''}
-                    ${app.playerInfo || app.player_info || app.playerId || app.player_id ? `<div class="player-info">معرف اللاعب: ${app.playerInfo || app.player_info || app.playerId || app.player_id}</div>` : ''}
 
                     <div class="progress-box" id="progress-box-${index}">
                         <div class="progress-bar-bg"><div class="progress-fill" id="bar-${index}"></div></div>
@@ -197,92 +197,5 @@
                 const itemName = (item.name || "").toLowerCase();
                 const itemDesc = (item.description || "").toLowerCase();
                 const itemCat = (item.category || item.tag || "").toLowerCase();
-                const itemPlayer = (item.playerInfo || item.player_info || item.playerId || item.player_id || "").toLowerCase();
-                const fullText = `${itemName} ${itemDesc} ${itemCat} ${itemPlayer}`;
-
-                const matchesSearch = fullText.includes(searchTerm);
-
-                let matchesCategory = true;
-                if (currentCategory !== 'all') {
-                    const targetCategory = currentCategory.toLowerCase();
-                    matchesCategory = (item.category && item.category.toLowerCase() === targetCategory) ||
-                                      (item.tag && item.tag.toLowerCase() === targetCategory) ||
-                                      fullText.includes(targetCategory);
-                }
-
-                return matchesSearch && matchesCategory;
-            });
-
-            renderItems(filtered);
-        }
-
-        function copyToClipboard(text, index) {
-            navigator.clipboard.writeText(text).then(() => {
-                const iconElement = document.getElementById(`copy-icon-${index}`);
-                
-                ,
-                if (iconElement) {
-                    iconElement.src = checkCopyIcon;
-                    setTimeout(() => {
-                        iconElement.src = originalCopyIcon;
-                    }, 2000);
-                }
-            });
-        }
-
-        function fetchAllReactions() {
-            fetch('https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions.json')
-                .then(res => res.json())
-                .then(data => {
-                    if (!data) return;
-                    allItems.forEach((app, index) => {
-                        const uniqueKey = app.id || `item_${index}`;
-                        const likesSpan = document.getElementById(`likes-count-${index}`);
-                        const dislikesSpan = document.getElementById(`dislikes-count-${index}`);
-                        
-                        if (data[uniqueKey]) {
-                            if (likesSpan && data[uniqueKey].likes) {
-                                likesSpan.textContent = data[uniqueKey].likes;
-                            }
-                            if (dislikesSpan && data[uniqueKey].dislikes) {
-                                dislikesSpan.textContent = data[uniqueKey].dislikes;
-                            }
-                        }
-                    });
-                }).catch(err => console.error(err));
-        }
-
-        function handleReaction(uniqueKey, index, type) {
-            const lastActionDate = localStorage.getItem(`reacted_${uniqueKey}`);
-            const today = new Date().toDateString();
-
-            if (lastActionDate === today) {
-                alert("لقد قمت بالتفاعل مع هذا العنصر اليوم بالفعل. يمكنك التفاعل مرة أخرى غداً!");
-                return;
-            }
-
-            const countSpan = document.getElementById(`${type}-count-${index}`);
-            if (!countSpan) return;
-            let currentCount = parseInt(countSpan.textContent) || 0;
-            currentCount++;
-            countSpan.textContent = currentCount;
-
-            localStorage.setItem(`reacted_${uniqueKey}`, today);
-
-            fetch(`https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions/${uniqueKey}/${type}.json`, {
-                method: 'PUT',
-                body: JSON.stringify(currentCount)
-            }).catch(err => console.error(err));
-        }
-
-        // كود تشغيل الموقع بدون إنترنت (Service Worker)
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("./sw.js", { scope: "./" })
-                    .then((reg) => console.log("Service Worker Registered!", reg.scope))
-                    .catch((err) => console.log("Service Worker Failed:", err));
-            });
-        }
-    </script>
-</body>
-</html>
+                const itemPlayerId = (item.playerId || "").toLowerCase
+    
