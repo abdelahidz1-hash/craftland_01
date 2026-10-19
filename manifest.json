@@ -7,5 +7,7 @@
   "scope": "/",
   "short_name": "abdelahidz1-hash.github",
   "start_url": "/",
-  "theme_color": "#ffffff"
+  "theme_color": "#ffffff",
+  "id": "CRAFTLAND",
+  "description": "CRAFTLAND MAP"
 }
