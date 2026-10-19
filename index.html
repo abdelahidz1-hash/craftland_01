@@ -45,7 +45,9 @@
         .game-badge { position: absolute; top: 10px; right: 10px; background: #00875a; color: #fff; font-size: 0.75rem; padding: 3px 10px; border-radius: 4px; font-weight: bold; display: none; }
         .game-info-overlay { background: transparent; border: none; border-radius: 0; padding: 0 0 8px 0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
         .game-title-row { font-size: 1rem; font-weight: 300; color: #fff; text-align: right; }
-        .player-id-row { font-size: 0.75rem; color: #ffab00; text-align: right; font-weight: bold; }
+        .player-id-row { font-size: 0.75rem; color: #ffffff; text-align: right; font-weight: 300; display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+        .player-id-copy { width: 14px; height: 14px; cursor: pointer; filter: invert(1); transition: transform 0.2s ease; display: inline-block; vertical-align: middle; }
+        .player-id-copy:active { transform: scale(0.9); }
         .game-sub-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #aaa; }
         .game-stats { display: flex; align-items: center; gap: 5px; color: #ff7700; font-weight: bold; display: none; }
 
@@ -151,7 +153,7 @@
                     
                     <div class="game-info-overlay">
                         <div class="game-title-row">${app.name}</div>
-                        ${playerId ? `<div class="player-id-row">ID: ${playerId}</div>` : ''}
+                        ${playerId ? `<div class="player-id-row">ID: ${playerId} <img src="${originalCopyIcon}" class="player-id-copy" id="player-copy-icon-${index}" onclick="copyToClipboard('${playerId}', 'player-copy-icon-${index}')" title="نسخ الآيدي"></div>` : ''}
                     </div>
 
                     ${app.description ? `<p class="app-description">${app.description}</p>` : ''}
@@ -162,7 +164,7 @@
 
                     ${app.code ? `
                     <div class="cod-container">
-                        <img src="${originalCopyIcon}" class="copy-btn" id="copy-icon-${index}" onclick="copyToClipboard('${app.code}',${index})">
+                        <img src="${originalCopyIcon}" class="copy-btn" id="copy-icon-${index}" onclick="copyToClipboard('${app.code}', 'copy-icon-${index}')">
                         <div class="reactions-group">
                             <button class="like-btn" onclick="handleReaction('${uniqueKey}',${index}, 'likes')">
                                 <img src="${likeIconUrl}" alt="like">
@@ -220,9 +222,9 @@
             renderItems(filtered);
         }
 
-        function copyToClipboard(text, index) {
+        function copyToClipboard(text, elementId) {
             navigator.clipboard.writeText(text).then(() => {
-                const iconElement = document.getElementById(`copy-icon-${index}`);
+                const iconElement = document.getElementById(elementId);
                 
                 if (iconElement) {
                     iconElement.src = checkCopyIcon;
@@ -288,4 +290,5 @@
         }
     </script>
 </body>
-</html>
+                    </html>
+                    
