@@ -43,9 +43,9 @@
         
         /* شريط المعلومات فوق وتحت الصورة مثل اللعبة */
         .game-badge { position: absolute; top: 10px; right: 10px; background: #00875a; color: #fff; font-size: 0.75rem; padding: 3px 10px; border-radius: 4px; font-weight: bold; display: none; }
-        .game-info-overlay { background: transparent; border: none; border-radius: 0; padding: 0 0 8px 0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 5px; }
+        .game-info-overlay { background: transparent; border: none; border-radius: 0; padding: 0 0 8px 0; margin-bottom: 10px; display: flex; flex-direction: column; gap: 4px; }
         .game-title-row { font-size: 1rem; font-weight: 300; color: #fff; text-align: right; }
-        .player-id-row { font-size: 0.75rem; color: #888; text-align: right; }
+        .player-id-row { font-size: 0.75rem; color: #ffab00; text-align: right; font-weight: bold; }
         .game-sub-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #aaa; }
         .game-stats { display: flex; align-items: center; gap: 5px; color: #ff7700; font-weight: bold; display: none; }
 
@@ -139,6 +139,9 @@
             container.innerHTML = '';
             items.forEach((app, index) => {
                 const uniqueKey = app.id || `item_${index}`;
+                // قراءة player_id من ملف items.json بالشكل الصحيح
+                const playerId = app.player_id || app.playerId || "";
+
                 container.innerHTML += `
                 <div class="app-card" id="card-${index}">
                     <div class="app-icon">
@@ -148,7 +151,7 @@
                     
                     <div class="game-info-overlay">
                         <div class="game-title-row">${app.name}</div>
-                        ${app.playerId ? `<div class="player-id-row">ID Player: ${app.playerId}</div>` : ''}
+                        ${playerId ? `<div class="player-id-row">ID: ${playerId}</div>` : ''}
                     </div>
 
                     ${app.description ? `<p class="app-description">${app.description}</p>` : ''}
@@ -196,6 +199,93 @@
             const filtered = allItems.filter(item => {
                 const itemName = (item.name || "").toLowerCase();
                 const itemDesc = (item.description || "").toLowerCase();
-                const itemCat = (item.category || item.tag || "").toLowerCase();
-                const itemPlayerId = (item.playerId || "").toLowerCase
-    
+                const itemCat = (item.category || item.tag || item.link || "").toLowerCase();
+                const itemPlayerId = (item.player_id || item.playerId || "").toLowerCase();
+                const fullText = `${itemName} ${itemDesc} ${itemCat} ${itemPlayerId}`;
+
+                const matchesSearch = fullText.includes(searchTerm);
+
+                let matchesCategory = true;
+                if (currentCategory !== 'all') {
+                    const targetCategory = currentCategory.toLowerCase();
+                    matchesCategory = (item.category && item.category.toLowerCase() === targetCategory) ||
+                                      (item.tag && item.tag.toLowerCase() === targetCategory) ||
+                                      (item.link && item.link.toLowerCase() === targetCategory) ||
+                                      fullText.includes(targetCategory);
+                }
+
+                return matchesSearch && matchesCategory;
+            });
+
+            renderItems(filtered);
+        }
+
+        function copyToClipboard(text, index) {
+            navigator.clipboard.writeText(text).then(() => {
+                const iconElement = document.getElementById(`copy-icon-${index}`);
+                
+                if (iconElement) {
+                    iconElement.src = checkCopyIcon;
+                    setTimeout(() => {
+                        iconElement.src = originalCopyIcon;
+                    }, 2000);
+                }
+            });
+        }
+
+        function fetchAllReactions() {
+            fetch('https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions.json')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data) return;
+                    allItems.forEach((app, index) => {
+                        const uniqueKey = app.id || `item_${index}`;
+                        const likesSpan = document.getElementById(`likes-count-${index}`);
+                        const dislikesSpan = document.getElementById(`dislikes-count-${index}`);
+                        
+                        if (data[uniqueKey]) {
+                            if (likesSpan && data[uniqueKey].likes) {
+                                likesSpan.textContent = data[uniqueKey].likes;
+                            }
+                            if (dislikesSpan && data[uniqueKey].dislikes) {
+                                dislikesSpan.textContent = data[uniqueKey].dislikes;
+                            }
+                        }
+                    });
+                }).catch(err => console.error(err));
+        }
+
+        function handleReaction(uniqueKey, index, type) {
+            const lastActionDate = localStorage.getItem(`reacted_${uniqueKey}`);
+            const today = new Date().toDateString();
+
+            if (lastActionDate === today) {
+                alert("لقد قمت بالتفاعل مع هذا العنصر اليوم بالفعل. يمكنك التفاعل مرة أخرى غداً!");
+                return;
+            }
+
+            const countSpan = document.getElementById(`${type}-count-${index}`);
+            if (!countSpan) return;
+            let currentCount = parseInt(countSpan.textContent) || 0;
+            currentCount++;
+            countSpan.textContent = currentCount;
+
+            localStorage.setItem(`reacted_${uniqueKey}`, today);
+
+            fetch(`https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions/${uniqueKey}/${type}.json`, {
+                method: 'PUT',
+                body: JSON.stringify(currentCount)
+            }).catch(err => console.error(err));
+        }
+
+        // كود تشغيل الموقع بدون إنترنت (Service Worker)
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./sw.js", { scope: "./" })
+                    .then((reg) => console.log("Service Worker Registered!", reg.scope))
+                    .catch((err) => console.log("Service Worker Failed:", err));
+            });
+        }
+    </script>
+</body>
+</html>
