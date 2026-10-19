@@ -270,8 +270,16 @@
                 body: JSON.stringify(currentCount)
             }).catch(err => console.error(err));
         }
+
+        // كود تشغيل الموقع بدون إنترنت (Service Worker)
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", () => {
+                navigator.serviceWorker.register("./sw.js", { scope: "./" })
+                    .then((reg) => console.log("Service Worker Registered!", reg.scope))
+                    .catch((err) => console.log("Service Worker Failed:", err));
+            });
+        }
     </script>
 </body>
     </html>
-
     
