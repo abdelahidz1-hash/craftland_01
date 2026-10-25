@@ -116,6 +116,20 @@
     </div>
 
     <div class="container">
+        <!-- مكان الإعلان هنا أسفل شريط البحث والتصنيفات وقبل عرض محتوى الخرائط -->
+        <div style="text-align: center; margin: 15px 0;">
+            <script>
+              atOptions = {
+                'key' : '69ab74afae32c71dfa68f3228b696128',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+              };
+            </script>
+            <script src="https://bauval.org/22/69ab74afae32c71dfa68f3228b696128"></script>
+        </div>
+
         <div class="apps-grid" id="apps-container"></div>
         <p class="update-notice"></p>
     </div>
@@ -237,57 +251,5 @@
         }
 
         function fetchAllReactions() {
-            fetch('https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions.json')
-                .then(res => res.json())
-                .then(data => {
-                    if (!data) return;
-                    allItems.forEach((app, index) => {
-                        const uniqueKey = app.id || `item_${index}`;
-                        const likesSpan = document.getElementById(`likes-count-${index}`);
-                        const dislikesSpan = document.getElementById(`dislikes-count-${index}`);
-                        
-                        if (data[uniqueKey]) {
-                            if (likesSpan && data[uniqueKey].likes) {
-                                likesSpan.textContent = data[uniqueKey].likes;
-                            }
-                            if (dislikesSpan && data[uniqueKey].dislikes) {
-                                dislikesSpan.textContent = data[uniqueKey].dislikes;
-                            }
-                        }
-                    });
-                }).catch(err => console.error(err));
-        }
-
-        function handleReaction(uniqueKey, index, type) {
-            const lastActionDate = localStorage.getItem(`reacted_${uniqueKey}`);
-            const today = new Date().toDateString();
-
-            if (lastActionDate === today) {
-                alert("لقد قمت بالتفاعل مع هذا العنصر اليوم بالفعل. يمكنك التفاعل مرة أخرى غداً!");
-                return;
-            }
-
-            const countSpan = document.getElementById(`${type}-count-${index}`);
-            if (!countSpan) return;
-            let currentCount = parseInt(countSpan.textContent) || 0;
-            currentCount++;
-            countSpan.textContent = currentCount;
-
-            localStorage.setItem(`reacted_${uniqueKey}`, today);
-
-            fetch(`https://glitch-ff-4c081-default-rtdb.firebaseio.com/reactions/${uniqueKey}/${type}.json`, {
-                method: 'PUT',
-                body: JSON.stringify(currentCount)
-            }).catch(err => console.error(err));
-        }
-
-        if ("serviceWorker" in navigator) {
-            window.addEventListener("load", () => {
-                navigator.serviceWorker.register("./sw.js", { scope: "./" })
-                    .then((reg) => console.log("Service Worker Registered!", reg.scope))
-                    .catch((err) => console.log("Service Worker Failed:", err));
-            });
-        }
-    </script>
-</body>
-</html>
+            fetch('
+                                     
