@@ -1,7 +1,7 @@
 [
   {
     "name": "الهروب من السجن",
-    "description": "أهرب الآن قبل فوات الأوان",
+    "description":"أهرب الآن قبل فوات الأوان",
     "icon": "https://i.ibb.co/zVth9YtL/IMG-20261014-222053.jpg",
     "link": "باركور",
     "code": "#M06X4W",
@@ -33,7 +33,7 @@
   },
   {
     "name": "خريطه حصول على رقصة",
-    "description": "خريطة الحصول على رقصة مجانا عن طريق هذه الخريطة[span_0](start_span)[span_0](end_span)",
+    "description": "خريطة الحصول على رقصة مجانا عن طريق هذه الخريطة",
     "icon": "https://i.ibb.co/6SvZ4xk/Picsart-26-10-22-21-22-02-672.png",
     "link": "باركور",
     "code": "#A10M3S",
